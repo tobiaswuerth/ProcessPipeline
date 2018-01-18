@@ -2,23 +2,23 @@
 
 namespace ch.wuerth.tobias.ProcessPipeline
 {
-    public abstract class ProcessSegment<TFrom, TTo> : IProcessReceiver<TFrom>
+    public abstract class ProcessPipe<TFrom, TTo> : Procedure, IPipeConnector<TFrom>
     {
         public delegate void ProcessFinishedEvent(TTo to);
 
         public delegate void ProcessStartedEvent(TFrom from);
 
-        public IProcessReceiver<TTo> Next { get; private set; }
+        public IPipeConnector<TTo> Next { get; private set; }
 
-        public void Receive(TFrom obj)
+        public void Take(TFrom obj)
         {
             OnProcessStarted?.Invoke(obj);
             TTo processed = OnProcess(obj);
             OnProcessFinished?.Invoke(processed);
-            Next?.Receive(processed);
+            Next?.Take(processed);
         }
 
-        public void Append(IProcessReceiver<TTo> next)
+        public void Connect(IPipeConnector<TTo> next)
         {
             Next = next ?? throw new ArgumentNullException(nameof(next));
         }
@@ -27,5 +27,17 @@ namespace ch.wuerth.tobias.ProcessPipeline
         public event ProcessStartedEvent OnProcessStarted;
 
         protected abstract TTo OnProcess(TFrom obj);
+
+        public override void Process(dynamic obj)
+        {
+            if (obj is TFrom oFrom)
+            {
+                Take(oFrom);
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+        }
     }
 }
