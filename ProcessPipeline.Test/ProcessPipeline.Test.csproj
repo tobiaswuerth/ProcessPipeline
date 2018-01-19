@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProcessPipeline\ProcessPipeline\ProcessPipeline.csproj" />
+    <ProjectReference Include="..\ProcessPipeline\ProcessPipeline.csproj" />
   </ItemGroup>
 
 </Project>
