@@ -33,7 +33,7 @@ namespace ch.wuerth.tobias.ProcessPipeline
 
         public override void Process(dynamic obj)
         {
-            if (typeof(TFrom).IsAssignableFrom(obj))
+            if (GetTypeFrom().IsInstanceOfType(obj))
             {
                 Handle(obj);
             }

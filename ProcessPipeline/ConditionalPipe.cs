@@ -21,14 +21,17 @@ namespace ch.wuerth.tobias.ProcessPipeline
 
         public override Type GetTypeTo()
         {
-            return Next.FirstOrDefault()?.GetTypeFrom() ?? typeof(Object);
+            return GetTypeFrom();
         }
 
         public override void Process(dynamic obj)
         {
-            if (GetTypeFrom().IsAssignableFrom(obj) && _isTrueEvaluation(obj))
+            if (GetTypeFrom().IsInstanceOfType(obj))
             {
-                Next.ForEach(x => x.Process(obj));
+                if (_isTrueEvaluation(obj))
+                {
+                    Next.ForEach(x => x.Process(obj));
+                }
             }
             else
             {

@@ -140,12 +140,24 @@ namespace ch.wuerth.tobias.ProcessPipeline.Test
         [ TestMethod ]
         public void TestConditionalPipe()
         {
-            Pipe pipe1 = new DateTimeProcessor();
-            Pipe pipe2 = new ConditionalPipe(o => null != o);
+            Pipe pipe1 = new LowerCaseProcessor();
+            Pipe pipe2 = new ConditionalPipe(o => !String.IsNullOrEmpty(o));
             LowerCaseProcessor pipe3 = new LowerCaseProcessor();
             pipe1.Connect(pipe2).Connect(pipe3);
-            pipe3.OnProcessStarted += from => Assert.Fail("run although condition is not met");
-            pipe1.Process(DateTime.Now);
+            pipe3.OnProcessStarted += from => { };
+        }
+
+        [ TestMethod ]
+        public void TestConditionalPipeNot()
+        {
+            Pipe pipe1 = new LowerCaseProcessor();
+            Pipe pipe2 = new ConditionalPipe(o => !String.IsNullOrEmpty(o));
+            LowerCaseProcessor pipe3 = new LowerCaseProcessor();
+            pipe1.Connect(pipe2).Connect(pipe3);
+            Boolean run = false;
+            pipe3.OnProcessStarted += from => run = true;
+            pipe1.Process("a");
+            Assert.IsTrue(run);
         }
     }
 }
