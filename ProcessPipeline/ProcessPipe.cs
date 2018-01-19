@@ -2,25 +2,18 @@
 
 namespace ch.wuerth.tobias.ProcessPipeline
 {
-    public abstract class ProcessPipe<TFrom, TTo> : Procedure, IPipeConnector<TFrom>
+    public abstract class ProcessPipe<TFrom, TTo> : Pipe
     {
         public delegate void ProcessFinishedEvent(TTo to);
 
         public delegate void ProcessStartedEvent(TFrom from);
 
-        public IPipeConnector<TTo> Next { get; private set; }
-
-        public void Take(TFrom obj)
+        private void Handle(TFrom obj)
         {
             OnProcessStarted?.Invoke(obj);
             TTo processed = OnProcess(obj);
             OnProcessFinished?.Invoke(processed);
-            Next?.Take(processed);
-        }
-
-        public void Connect(IPipeConnector<TTo> next)
-        {
-            Next = next ?? throw new ArgumentNullException(nameof(next));
+            Next?.ForEach(x => x.Process(processed));
         }
 
         public event ProcessFinishedEvent OnProcessFinished;
@@ -28,11 +21,21 @@ namespace ch.wuerth.tobias.ProcessPipeline
 
         protected abstract TTo OnProcess(TFrom obj);
 
+        public override Type GetTypeFrom()
+        {
+            return typeof(TFrom);
+        }
+
+        public override Type GetTypeTo()
+        {
+            return typeof(TTo);
+        }
+
         public override void Process(dynamic obj)
         {
-            if (obj is TFrom oFrom)
+            if (typeof(TFrom).IsAssignableFrom(obj))
             {
-                Take(oFrom);
+                Handle(obj);
             }
             else
             {
