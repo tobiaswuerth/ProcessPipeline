@@ -5,9 +5,9 @@ namespace ch.wuerth.tobias.ProcessPipeline
 {
     public class ConditionalPipe : Pipe
     {
-        public delegate Boolean IsTrueEvaluation(dynamic obj);
-
         private readonly IsTrueEvaluation _isTrueEvaluation;
+
+        public delegate Boolean IsTrueEvaluation(dynamic obj);
 
         public ConditionalPipe(IsTrueEvaluation isTrueEvaluation)
         {
