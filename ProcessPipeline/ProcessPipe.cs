@@ -6,7 +6,7 @@ namespace ch.wuerth.tobias.ProcessPipeline
     {
         private readonly Func<TIn, TOut> _onProcess;
 
-        protected ProcessPipe(Func<TIn, TOut> onProcess)
+        public ProcessPipe(Func<TIn, TOut> onProcess)
         {
             _onProcess = onProcess;
         }
