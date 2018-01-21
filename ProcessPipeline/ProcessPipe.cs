@@ -2,45 +2,28 @@
 
 namespace ch.wuerth.tobias.ProcessPipeline
 {
-    public abstract class ProcessPipe<TFrom, TTo> : Pipe
+    public class ProcessPipe<TIn, TOut>
     {
-        public delegate void ProcessFinishedEvent(TTo to);
+        private readonly Func<TIn, TOut> _onProcess;
 
-        public delegate void ProcessStartedEvent(TFrom from);
-
-        private void Handle(TFrom obj)
+        protected ProcessPipe(Func<TIn, TOut> onProcess)
         {
-            OnProcessStarted?.Invoke(obj);
-            TTo processed = OnProcess(obj);
-            OnProcessFinished?.Invoke(processed);
-            Next?.ForEach(x => x.Process(processed));
+            _onProcess = onProcess;
         }
 
-        public event ProcessFinishedEvent OnProcessFinished;
-        public event ProcessStartedEvent OnProcessStarted;
-
-        protected abstract TTo OnProcess(TFrom obj);
-
-        public override Type GetTypeFrom()
+        public TOut Process(TIn obj)
         {
-            return typeof(TFrom);
+            return _onProcess.Invoke(obj);
         }
 
-        public override Type GetTypeTo()
+        public ProcessPipe<TIn, TAnother> Connect<TAnother>(ProcessPipe<TOut, TAnother> processPipe)
         {
-            return typeof(TTo);
-        }
-
-        public override void Process(dynamic obj)
-        {
-            if (GetTypeFrom().IsInstanceOfType(obj))
+            TAnother NewProcess(TIn o)
             {
-                Handle(obj);
+                return processPipe._onProcess(_onProcess(o));
             }
-            else
-            {
-                throw new InvalidCastException();
-            }
+
+            return new ProcessPipe<TIn, TAnother>(NewProcess);
         }
     }
 }
