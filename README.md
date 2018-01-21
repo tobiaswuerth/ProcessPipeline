@@ -1,6 +1,9 @@
 # ProcessPipeline
 ProcessPipeline is an easy to use assembly line framework. It allows you to build complex workflows with reusable assembly parts.
 
+## Availability
+You can get it as a [NuGet package](https://www.nuget.org/packages/ch.wuerth.tobias.ProcessPipeline/) or clone it from this github repository.
+
 ## Example
 
 An example using custom pipe classes and inline pipe declaration to build a console logger.
