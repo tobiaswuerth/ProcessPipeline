@@ -142,6 +142,16 @@ public LogFlagPipe(LogTypes type, LogFlags flags) : base(o =>
     }
     return pipe.Process(o);
 }) { }
+
+public enum LogTypes
+{
+    Trace
+    , Debug
+    , Info
+    , Warning
+    , Error
+    , Fatal
+}
 ```
 
 .. you get the idea.
