@@ -8,6 +8,7 @@ An example using custom pipe classes and inline pipe declaration to build a cons
 public class ConsoleLogger
 {
     private readonly ProcessPipe<Object, String> _logPipe;
+    public static LogFlags DefaultLogFlags = LogFlags.PrefixLoggerType | LogFlags.PrefixTimeStamp | LogFlags.SuffixNewLine;
 
     public ConsoleLogger(LogTypes type) : base(type)
     {
